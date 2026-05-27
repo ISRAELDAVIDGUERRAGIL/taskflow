@@ -10,12 +10,11 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    $projects = auth()->user()->projects()->withCount('tasks')->get();
     $pendingTasks = auth()->user()->projects()->withWhereHas('tasks', function ($q) {
         $q->where('status', 'Pendiente');
     })->get()->pluck('tasks')->flatten();
 
-    return view('dashboard', compact('projects', 'pendingTasks'));
+    return view('dashboard', compact('pendingTasks'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
